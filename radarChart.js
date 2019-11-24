@@ -12,9 +12,9 @@ function RadarChart(id, data, options) {
 	 margin: {top: 10, right: 10, bottom: 10, left: 10}, //The margins of the SVG
 	 levels: 2,				//How many levels or inner circles should there be drawn
 	 maxValue: 0, 			//What is the value that the biggest circle will represent
-	 labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
+	 labelFactor: 1.2, 	//How much farther than the radius of the outer circle should the labels be placed
 	 wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
-	 opacityArea: 0.60, 	//The opacity of the area of the blob
+	 opacityArea: 0.7, 	//The opacity of the area of the blob
 	 dotRadius: 4, 			//The size of the colored circles of each blog
 	 opacityCircles: 0, 	//The opacity of the circles of each blob
 	 strokeWidth: 1, 		//The width of the stroke around each blob
@@ -79,11 +79,11 @@ function RadarChart(id, data, options) {
 	
 	//Draw the background circles
 	axisGrid.selectAll(".levels")
-	   .data(d3.range(1,(cfg.levels+1)).reverse())
+	   .data([1])
 	   .enter()
 		.append("circle")
 		.attr("class", "gridCircle")
-		.attr("r", function(d, i){return radius+5;})
+		.attr("r", function(d, i){return radius*1.15;})
 		.style("fill", "#CDCDCD")
 		.style("stroke", "#CDCDCD")
 		.style("fill-opacity", cfg.opacityCircles)
@@ -113,17 +113,17 @@ function RadarChart(id, data, options) {
 		.append("g")
 		.attr("class", "axis");
     //Append the lines
-    /*
+    
 	axis.append("line")
-		.attr("x1", 0)
-		.attr("y1", 0)
-		.attr("x2", function(d, i){ return rScale(maxValue*1.1) * Math.cos(angleSlice*i - Math.PI/2); })
-		.attr("y2", function(d, i){ return rScale(maxValue*1.1) * Math.sin(angleSlice*i - Math.PI/2); })
+		.attr("x1", function(d, i){ return radius*1.05 * Math.cos(angleSlice*i - Math.PI/2); })
+		.attr("y1", function(d, i){ return radius *1.05* Math.sin(angleSlice*i - Math.PI/2); })
+		.attr("x2", function(d, i){ return radius*1.13 * Math.cos(angleSlice*i - Math.PI/2); })
+		.attr("y2", function(d, i){ return radius*1.13 * Math.sin(angleSlice*i - Math.PI/2); })
 		.attr("class", "line")
-		.style("stroke", "white")
-        .style("stroke-width", "2px");
+		.style("stroke", "grey")
+        .style("stroke-width", function(d,i){return i%2==0?"3px":"1px"});
         
-    */
+    
 	//Append the labels at each axis
 	axis.append("text")
 		.attr("class", "legend")
@@ -186,13 +186,13 @@ function RadarChart(id, data, options) {
     //Sachin's Code here
 
     var pie = d3.pie()
-        .value(function(d) { return d.minutes; });
+        .value(function(d) { return d.degrees; });
 
     var path = d3.arc()
-        .outerRadius(radius+2).innerRadius(0);
+        .outerRadius(rScale(maxValue)).innerRadius(0);
     
     var arc = g.selectAll(".arc")
-        .data(pie([{past:"Y",minutes:300},{past:"N",minutes:60}]))
+        .data(pie([{past:"Y",degrees:300},{past:"N",degrees:60}]))
         .enter()
         .append("g")
     
@@ -205,7 +205,7 @@ function RadarChart(id, data, options) {
     
     arc.append("line")          // attach a line
         .style("stroke", "red")  // colour the line
-        .style("stroke-width","2px")
+        .style("stroke-width","4px")
         .attr("x1", 0)     // x position of the first end of the line
         .attr("y1", 0)      // y position of the first end of the line
         .attr("x2", radius * Math.cos(20*15*Math.PI/180 - Math.PI/2))     // x position of the second end of the line

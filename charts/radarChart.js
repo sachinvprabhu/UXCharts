@@ -271,7 +271,7 @@ function RadarChart(id, data, options) {
         .attr("x", 0)
         .attr("y", radius/2)
         .text(function(){
-            return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][new Date().getDay()]
+            return [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()]
         })
         .style("fill","white");
 

@@ -1,90 +1,41 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>GoogleMap</title>
+		<script id="sap-ui-bootstrap"
+			src="../ui5/resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_belize"
+			data-sap-ui-resourceroots='{"com.wipro.gmap.GoogleMap": "./"}'
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+			data-sap-ui-frameOptions="trusted">
+		</script>
+		<script id="sap-ui-bootstrap" type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<API_KEY_HERE>&libraries=visualization,places">
+		</script>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>Smoothed D3.js Radar Chart</title>
-
-    <!-- Google fonts -->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-
-    <!-- D3.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-    <script src="//d3js.org/d3.v3.min.js"></script>
-    <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
-    
-    <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 300;
-            /* fill: #242424; */
-            text-align: center;
-            /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
-            cursor: default;
-        }
-
-        .legend {
-            font-family: 'Raleway', sans-serif;
-            fill: #333333;
-        }
-
-        .tooltip {
-            fill: #333333;
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <div class="radarChart"></div>
-
-    <script src="radarChart.js"></script>
-
-    <script id="bootstrap" src="https://ui5.sap.com/resources/sap-ui-core.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
 
-    
-    <script>
-
-        var margin = { top: 100, right: 100, bottom: 100, left: 100 },
-            width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
-            height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-
-        ////////////////////////////////////////////////////////////// 
-        ////////////////////////// Data ////////////////////////////// 
-        ////////////////////////////////////////////////////////////// 
-        
-        setInterval(function(){
-            var data = [
-                new Array(24).fill(1).map((x, y) => {
-                    return { axis: y, value: Math.random() * 35 + 65 };
-                }), new Array(24).fill(1).map((x, y) => {
-                    return { axis: y, value: Math.random() * 35 + 65 };
-                })
-            ];
-            var color = d3.scale.ordinal()
-                .range(["#6cd1eb","#f5ad5b"]);
-
-            var radarChartOptions = {
-                w: width,
-                h: height,
-                margin: margin,
-                maxValue: 0.5,
-                levels: 5,
-                roundStrokes: true,
-                color: color
-            };
-            //Call function to draw the Radar chart
-            RadarChart(".radarChart", data, radarChartOptions);
-        },5000)
-        
-        
+		<style>
+			body {
+				font-family: 'Open Sans', sans-serif !important;
+				font-size: 11px;
+				font-weight: 300;
+			}
+		</style>
 
 
-    </script>
-</body>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		<script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
 
+		<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+		
+		<script src="charts/radarChart.js"></script>
+		
+	</head>
+	<body class="sapUiBody">
+		<div data-sap-ui-component data-name="com.wipro.gmap.GoogleMap" data-id="container" data-settings='{"id" : "GoogleMap"}'></div>
+	</body>
 </html>

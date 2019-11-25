@@ -1,0 +1,43 @@
+.sachinCalendar .calendarDate{
+	position:relative;
+	text-align: center;
+	width: 3rem;
+	height: 3rem;
+}
+.sachinCalendar{
+	padding:1rem;
+}
+
+.sachinCalendar .weekDays{
+	opacity: 0.6;
+}
+.sachinCalendar button{
+	background:transparent;
+	border:0;
+}
+.sachinCalendar button:focus{
+	outline : none
+}
+.sachinCalendar .monthYear{
+	font-size:large;
+}
+
+.sachinCalendar .calendarDate .highlighter{
+	position: absolute;
+	background: rgba(3, 146, 160, 0.5);
+	border-radius: 50%;
+	top: 0;
+	margin: auto;
+	bottom: 0;
+	animation: zoomIn 1s ease-in;
+}
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  50% {
+    opacity: 1;
+  }
+}

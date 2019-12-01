@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
+<body>
+    <svg width="750" height="300"></svg>
+    <script>
+
+        var svg = d3.select("svg"),
+            margin = 100,
+            width = svg.attr("width") - margin,
+            height = svg.attr("height") - margin
+
+        var svgDefs = svg.append('defs');
+        var mainGradient = svgDefs.append('linearGradient')
+            .attr('id', 'mainGradient');
+
+        mainGradient.append('stop')
+            .attr('offset', '0')
+            .attr("stop-color", "#ffc3d7");
+
+        mainGradient.append('stop')
+            .attr('offset', '1')
+            .attr("stop-color", "rgba(255, 195, 215, 0.4)");
+
+        svgDefs.append("linearGradient")
+            .attr("id", "toHigh")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", 1)
+            .attr("xlink:href", "#mainGradient");
+
+
+        var g = svg.append("g")
+            .attr("transform", "translate(" + margin / 2 + "," + margin / 2 + ")");
+
+
+        data = new Array(12).fill(1).map((d, i) => {
+            return {
+                year: i + 2000,
+                value: parseInt(Math.random() * 500) + 500,
+                category: i < 2 ? "British Gas" : i < 8 ? "Scottish Power" : "National Grid",
+                billed: "$" + parseInt(Math.random() * 500),
+            }
+        });
+
+        var xScale = d3.scale.ordinal()
+          .domain(data.map(function(d){
+            return d.year;
+          }))
+          .rangeRoundBands([0, width],0.01);//padding
+
+        
+        var    yScale = d3.scale.linear().range([height, 0]);
+
+        yScale.domain([0, 1000]);
+
+        var xAxis = d3.svg.axis()
+          .scale(xScale)
+          .orient('bottom');
+        var yAxis = d3.svg.axis()
+          .scale(yScale)
+          .orient('left')
+          .ticks(3);
+
+        g.append('g')
+          .attr('class', 'axis')
+          .attr("fill","none")
+          .attr("stroke","black")
+          .attr('transform', 'translate(0,' + (height) + ')')
+          .call(xAxis);
+        g.append('g')
+          .attr('class', 'axis')
+          .attr("fill","none")
+          .attr("stroke","black")
+          .attr('transform', 'translate(0, 0)')
+          .call(yAxis);
+
+
+
+        //draw Bars
+        g.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .style("fill", "url(#toHigh)")
+            .attr("x", function (d) { return xScale(d.year); })
+            .attr("y", function (d) { return yScale(d.value); })
+            .attr("width", xScale.rangeBand())
+            .attr("height", function (d) { return height - yScale(d.value); });
+
+
+        
+
+
+
+
+        // Bar Lables and top line
+        g.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("x", function (d) { return xScale(d.year) + xScale.rangeBand() / 2; })
+            .attr("y", function (d) { return yScale(d.value) - 5; })
+            .attr("text-anchor", "middle")
+            .attr("stroke", "black")
+            .text(function (d) {
+                return d.billed
+            });
+        g.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("line")
+            .attr("x1", function (d) { return xScale(d.year) })
+            .attr("y1", function (d) { return yScale(d.value); })
+            .attr("x2", function (d) { return xScale(d.year) + xScale.rangeBand() })
+            .attr("y2", function (d) { return yScale(d.value); })
+            .attr("stroke", "black");
+        g.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("x", function (d) { return xScale(d.year) + xScale.rangeBand() / 2; })
+            .attr("y", function (d) { return yScale(d.value) + 14; })
+            .attr("text-anchor", "middle")
+            .attr("stroke", "black")
+            .text(function (d) {
+                return d.value + "kW"
+            });
+
+
+
+
+        // CountBy Category
+        var categories = [];
+        data.forEach(element => {
+            var existing = categories.find(function (d) { return d.category === element.category })
+            if (existing) {
+                existing.count++;
+            } else {
+                categories.push({
+                    category: element.category,
+                    count: 1
+                });
+            }
+        });
+
+
+
+        var lines = [];
+        categories.forEach((category, index) => {
+            if (lines.length === 0) {
+                lines.push({
+                    start: 0,
+                    category: category.category,
+                    end: (width/data.length) * category.count
+                });
+            } else {
+                lines.push({
+                    start: lines[lines.length - 1].end,
+                    category: category.category,
+                    end: lines[lines.length - 1].end + (width/data.length) * category.count
+                });
+            }
+        });
+
+        g.selectAll(".bar")
+            .data(lines)
+            .enter()
+            .append("line")
+            .attr("x1", function (d, i) {
+                return d.start;
+            })
+            .attr("x2", function (d, i, self) {
+                return d.end;
+            })
+            .attr("y1", height - 20)
+            .attr("y2", height - 20)
+            .attr("stroke", "black");
+
+        // Draw start of lines Tick
+        g.selectAll(".bar")
+            .data(lines)
+            .enter()
+            .append("line")
+            .attr("x1", function (d, i) {
+                return d.start;
+            })
+            .attr("x2", function (d, i, self) {
+                return d.start;
+            })
+            .attr("y1", height - 25)
+            .attr("y2", height - 15)
+            .attr("stroke", "black");
+
+        // Draw end of lines Tick
+        g.selectAll(".bar")
+            .data(lines)
+            .enter()
+            .append("line")
+            .attr("x1", function (d, i) {
+                return d.end;
+            })
+            .attr("x2", function (d, i, self) {
+                return d.end;
+            })
+            .attr("y1", height - 25)
+            .attr("y2", height - 15)
+            .attr("stroke", "black");
+
+
+        g.selectAll(".bar")
+            .data(lines)
+            .enter()
+            .append("text")
+            .attr("x", function (d, i) {
+                return (d.start + d.end) / 2;
+            })
+            .attr("y", function (d, i, self) {
+                return height - 30;
+            })
+            .attr("text-anchor", "middle")
+            .attr("stroke", "black")
+            .text(function (d) {
+                return d.category
+            });
+
+
+
+            //The data for our line
+            var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
+                            { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
+                            { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+
+            //This is the accessor function we talked about above
+            var lineFunction = d3.svg.line()
+                                    .x(function(d) { return xScale(d.year)+xScale.rangeBand()/2; })
+                                    .y(function(d) { return yScale(d.value); })
+                                    .interpolate("monotone");
+/*
+            //The SVG Container
+            var svgContainer = d3.select("body").append("svg")
+                                            .attr("width", 200)
+                                            .attr("height", 200);
+
+
+            .attr("x", function (d) { return xScale(d.year); })
+            .attr("y", function (d) { return yScale(d.value); })
+            
+*/
+            //The line SVG Path we draw
+            var lineGraph = g.append("path")
+                                .attr("d", lineFunction(data))
+                                .attr("stroke", "blue")
+                                .attr("stroke-width", 2)
+                                .attr("fill", "none");
+
+
+
+    </script>
+</body>
+
+</html>

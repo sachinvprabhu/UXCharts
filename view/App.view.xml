@@ -13,7 +13,11 @@
 									</sachin:vectors>
 								</sachin:Calendar>
 							</Panel>
-							<Panel id="radialChart" headerText="Radial"></Panel>
+							<Panel id="radialChart" headerText="Radial">
+								<layoutData>
+									<l:GridData span="L3 M12 S12"/>
+								</layoutData>
+							</Panel>
 							<Panel id="multiChart">
 								<layoutData>
 									<l:GridData span="L12 M12 S12"/>

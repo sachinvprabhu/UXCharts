@@ -4,8 +4,13 @@
 ////////////////// VisualCinnamon.com ///////////////////
 /////////// Inspired by the code of alangrafu ///////////
 /////////////////////////////////////////////////////////
-	
+
+jQuery.sap.require("sap.ui.thirdparty.d3");
+
 function RadarChart(id, data, options) {
+	
+	
+
 	var cfg = {
 	 w: 600,				//Width of the circle
 	 h: 600,				//Height of the circle
@@ -183,12 +188,16 @@ function RadarChart(id, data, options) {
     
     
 
-    //Sachin's Code here
+	//Sachin's Code here
+	
+	
 
-    var pie = d3.pie()
+
+
+    var pie = d3.layout.pie()
         .value(function(d) { return d.degrees; });
 
-    var path = d3.arc()
+    var path = d3.svg.arc()
         .outerRadius(rScale(maxValue)).innerRadius(0);
     
     var arc = g.selectAll(".arc")
@@ -196,12 +205,9 @@ function RadarChart(id, data, options) {
         .enter()
         .append("g")
     
-    var visible = d3.scaleOrdinal([
-            'rgba(0,0,0,0)','white'
-         ]);
     arc.append("path")
         .attr("d", path)
-        .attr("fill", function(d) { return visible(d.data.past); });
+        .attr("fill", function(d,i) { return ['rgba(0,0,0,0)','white'][i]; });
     
     arc.append("line")          // attach a line
         .style("stroke", "red")  // colour the line
